@@ -3,14 +3,14 @@ import java.util.List;
 
 public class Plant extends LivingThing{
 
-    private static final int BASE_SIZE = 4;
+    private static final int BASE_SIZE = 2;
     private static final int BASE_SPEED = 0;
 
     public Plant(int x, int y){
         super(x,y);
         setSize(BASE_SIZE);
         setSpeed(BASE_SPEED);
-        setCircle(new Circle(getBaseSize(), getCentre(), Color.green));
+        setCircle(new Circle(getSize(), getCentre(), Color.green));
     }
 
 

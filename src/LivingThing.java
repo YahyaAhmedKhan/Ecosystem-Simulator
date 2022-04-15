@@ -80,13 +80,23 @@ public abstract class LivingThing {
         this.deathCounter = deathCounter;
     }
 
-
+    /**
+     * makes the living thing move to its target
+     */
     public abstract void move();
 
+    /**
+     * checks whether the object is colliding with passes Living Thing
+     * @param livingThing the Living Thing with whom collision is being checked
+     * @return  true if Collision is occurring, false otherwise
+     */
     public abstract boolean collide(LivingThing livingThing);
 
     public abstract void live();
 
+    /**
+     * makes the living thing grow, shown by increase in size
+     */
     public abstract void grow();
 
 }

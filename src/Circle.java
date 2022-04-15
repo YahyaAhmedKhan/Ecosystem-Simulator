@@ -50,6 +50,6 @@ class Circle
     public void draw(Graphics g)
     {
         g.setColor(getColor());
-        g.fillOval(getCenter().x - getSize()/2 ,getCenter().y - getSize()/2,getSize(),getSize());
+        g.fillOval(getCenter().x - getSize() ,getCenter().y - getSize(),getSize()*2,getSize()*2);
     }
 }

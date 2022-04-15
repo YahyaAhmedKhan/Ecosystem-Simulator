@@ -9,8 +9,11 @@ public class Game extends JFrame {
     }
     
     private void initUI() {
+        Board board = new Board();
+        board.addEngine(new EcosystemEngine(board));
+        board.getEcoEngine().setG(board.getGraphics());
+        add(board);
 
-        add(new Board());
         
         setResizable(false);
         pack();
@@ -24,6 +27,7 @@ public class Game extends JFrame {
         
         EventQueue.invokeLater(() -> {
             Game game = new Game();
+
             game.setVisible(true);
         });
     }

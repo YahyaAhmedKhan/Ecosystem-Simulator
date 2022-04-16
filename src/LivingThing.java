@@ -83,7 +83,7 @@ public abstract class LivingThing {
     /**
      * makes the living thing move to its target
      */
-    public abstract void move();
+    public abstract void moveToEat();
 
     /**
      * checks whether the object is colliding with passes Living Thing

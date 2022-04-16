@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
@@ -23,10 +24,12 @@ public class Board extends JPanel implements ActionListener {
 
     private static int frame = 0;
 
-    private final int PLANTS = 300;
-    private final int HERBIVORES = 10;
-    private final int CARNIVORES = 10;
-    private final int CANNIBALS = 7;
+    Random r;
+
+    private final int PLANTS = 500;
+    private final int HERBIVORES = 15;
+    private final int CARNIVORES = 12;
+    private final int CANNIBALS = 10;
 
     private ArrayList<LivingThing> plantsList;
     private ArrayList<LivingThing> herbivoresList;
@@ -61,9 +64,8 @@ public class Board extends JPanel implements ActionListener {
         HerbivoreBabies = new Stack<Herbivore>();
         CarnivoreBabies = new Stack<Carnivore>();
         CannibalBabies = new Stack<Cannibal>();
-        
 
-        Random r = new Random();
+        r = new Random();
         for (int i = 0; i < PLANTS; i++) {
             plantsList.add(new Plant(r.nextInt(B_WIDTH), r.nextInt(B_HEIGHT)));
         }
@@ -104,85 +106,67 @@ public class Board extends JPanel implements ActionListener {
         for (LivingThing livingThing : herbivoresList) {
             Herbivore herbivore = (Herbivore) livingThing;
             if (herbivore.isAlive()) {
-                if (herbivore.getTarget() == null || !herbivore.getTarget().isAlive()) {
-                    herbivore.setTarget(herbivore.findTarget(plantsList));
-                }
-                herbivore.move();
+                herbivore.live();
+                herbivore.setTarget(herbivore.findTarget(plantsList));
 
-                if (herbivore.getTarget() != null)
-                    if (herbivore.collide(herbivore.getTarget()))
-                        herbivore.eat(herbivore.getTarget());
+                // herbivore.lockTarget();
 
-                if (herbivore.getSize() > 10) {
+                herbivore.moveToEat(); // move to the target, if it exists and eat if close enough
+
+                if (herbivore.getSize() > 10) { // die if you're too big
                     herbivore.giveBirth(HerbivoreBabies, 8);
                     herbivore.setAlive(false);
                 }
-
+                herbivore.getCircle().draw(g);
             }
 
-            herbivore.live();
-            if (herbivore.isAlive())
-                herbivore.getCircle().draw(g);
         }
         while (!HerbivoreBabies.isEmpty())
             herbivoresList.add((Herbivore) HerbivoreBabies.pop());
     }
 
-    private void drawCarnivores(Graphics g){
+    private void drawCarnivores(Graphics g) {
         for (LivingThing livingThing : carnivoresList) {
             Carnivore carnivore = (Carnivore) livingThing;
             if (carnivore.isAlive()) {
-                if (carnivore.getTarget() == null || !carnivore.getTarget().isAlive()) {
-                    carnivore.setTarget(carnivore.findTarget(herbivoresList));
-                    carnivore.setTarget(carnivore.findTarget(cannnibalsList));
-                    carnivore.lockTarget();
+                carnivore.live();
+                carnivore.setTarget(carnivore.findTarget(herbivoresList));
+                carnivore.setTarget(carnivore.findTarget(cannnibalsList));
 
-                }
-                carnivore.move();
+                // carnivore.lockTarget();
 
-                if (carnivore.getTarget() != null)
-                    if (carnivore.collide(carnivore.getTarget()))
-                        carnivore.eat(carnivore.getTarget());
+                carnivore.moveToEat();
 
                 if (carnivore.getSize() > 10) {
                     carnivore.giveBirth(CarnivoreBabies, 4);
                     carnivore.setAlive(false);
                 }
-
-            }
-            carnivore.live();
-            if (carnivore.isAlive())
                 carnivore.getCircle().draw(g);
+            }
         }
         while (!CarnivoreBabies.isEmpty())
             carnivoresList.add((Carnivore) CarnivoreBabies.pop());
     }
-    private void drawCannibals(Graphics g){
+
+    private void drawCannibals(Graphics g) {
         for (LivingThing livingThing : cannnibalsList) {
             Cannibal cannibal = (Cannibal) livingThing;
             if (cannibal.isAlive()) {
-                if (cannibal.getTarget() == null || !cannibal.getTarget().isAlive() && !cannibal.isTargetLocked()) {
-                    cannibal.setTarget(cannibal.findTarget(herbivoresList));
-                    cannibal.setTarget(cannibal.findTarget(carnivoresList));
-                    cannibal.setTarget(cannibal.findTarget(cannnibalsList));
-                    cannibal.lockTarget();
+                cannibal.live();
+                cannibal.setTarget(cannibal.findTarget(herbivoresList));
+                cannibal.setTarget(cannibal.findTarget(carnivoresList));
+                cannibal.setTarget(cannibal.findTarget(cannnibalsList));
 
-                }
-                cannibal.move();
+                // cannibal.lockTarget();
 
-                if (cannibal.getTarget() != null)
-                    if (cannibal.collide(cannibal.getTarget()))
-                        cannibal.eat(cannibal.getTarget());
+                cannibal.moveToEat();
 
                 if (cannibal.getSize() > 10) {
                     cannibal.giveBirth(CarnivoreBabies, 2);
                     cannibal.setAlive(false);
                 }
-
-            }
-            cannibal.live();
-            if (cannibal.isAlive())
                 cannibal.getCircle().draw(g);
+            }
         }
         while (!CannibalBabies.isEmpty())
             cannnibalsList.add((Cannibal) CannibalBabies.pop());
@@ -196,20 +180,23 @@ public class Board extends JPanel implements ActionListener {
         drawCarnivores(g);
         drawCannibals(g);
 
+        // for (int i = 0; i < 3; i++) {
+        // plantsList.add(new Plant(r.nextInt(B_WIDTH), r.nextInt(B_HEIGHT)));
+        // }
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        x += 1;
-        y += 1;
+        // x += 1;
+        // y += 1;
 
-        if (y > B_HEIGHT) {
+        // if (y > B_HEIGHT) {
 
-            y = INITIAL_Y;
-            x = INITIAL_X;
-        }
+        //     y = INITIAL_Y;
+        //     x = INITIAL_X;
+        // }
 
         repaint();
     }

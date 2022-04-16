@@ -144,7 +144,7 @@ public class EcosystemEngine {
                 if (herbivore.getTarget() == null || !herbivore.getTarget().isAlive()) {
                     herbivore.setTarget(herbivore.findTarget(plantsList));
                 }
-                herbivore.move();
+                herbivore.moveToEat();
 
                 if (herbivore.getTarget() != null)
                     if (herbivore.collide(herbivore.getTarget()))
@@ -175,7 +175,7 @@ public class EcosystemEngine {
                     carnivore.lockTarget();
 
                 }
-                carnivore.move();
+                carnivore.moveToEat();
 
                 if (carnivore.getTarget() != null)
                     if (carnivore.collide(carnivore.getTarget()))
@@ -205,7 +205,7 @@ public class EcosystemEngine {
                     cannibal.lockTarget();
 
                 }
-                cannibal.move();
+                cannibal.moveToEat();
 
                 if (cannibal.getTarget() != null)
                     if (cannibal.collide(cannibal.getTarget()))

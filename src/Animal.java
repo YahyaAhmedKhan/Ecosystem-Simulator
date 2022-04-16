@@ -11,7 +11,8 @@ public abstract class Animal extends LivingThing {
     }
 
     public void lockTarget() {
-        targetLocked = true;
+        if (getTarget() != null && getTarget().isAlive())
+            targetLocked = true;
         ;
     }
 
@@ -38,9 +39,9 @@ public abstract class Animal extends LivingThing {
         setDeathCounter(getDeathCounter() - 1);
         if (getDeathCounter() == 0) {
             setAlive(false);
-            System.out.println(this +  " starved");
+            System.out.println(this + " starved");
         }
-        
+
     }
 
     public void eat(LivingThing livingThing) {
@@ -48,14 +49,21 @@ public abstract class Animal extends LivingThing {
         grow();
         setDeathCounter(400);
         unlockTarget();
-        System.out.println(this + " ate " + livingThing);
+        if (!(livingThing instanceof Plant))
+            System.out.println(this + " ate " + livingThing);
     }
+
     /**
-     * gets the best target in the given list, if the target is closer than current one
+     * gets the best target in the given list, if the target is closer than current
+     * one
+     * 
      * @param livingThingList list of prey
-     * @return  the better target if found in the list, if not found, returns the precious target
+     * @return the better target if found in the list, if not found, returns the
+     *         precious target
      */
     public LivingThing findTarget(List<LivingThing> livingThingList) {
+        updateTargetLock();
+
         if (!isTargetLocked()) {
             int minDist = Integer.MAX_VALUE;
             LivingThing target = null;
@@ -71,13 +79,12 @@ public abstract class Animal extends LivingThing {
                         && (getSize() >= livingThing.getSize()) && dist < minDist) { // performance
                     // found object is:
                     // not self, alive, smaller, and closer
-                    if (getTarget() != null && getTarget().isAlive()) {
+                    if (getTarget() != null && getTarget().isAlive()) { // if u already have a valid tareget
                         if (Point.distance(x, y, xTarget, yTarget) < Point.distance(x, y, getTarget().getCentre().x,
                                 getTarget().getCentre().y)) {
                             minDist = dist;
                             target = livingThing;
-                        }
-                        else {
+                        } else {
                             target = getTarget();
                         }
                     } else {
@@ -86,42 +93,54 @@ public abstract class Animal extends LivingThing {
                     }
                 }
             }
+            // if (target == null)
+            // System.out.println("no prey " + isTargetLocked());
+            updateTargetLock();
             return target;
-        } else
+        } else {
+            updateTargetLock();
             return getTarget();
+        }
 
-    }
-
-
-    public abstract void giveBirth(List<LivingThing> animalList, int offsprings);
-
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this.toString().equals(obj.toString()))
-            return true;
-        else
-            return false;
     }
 
     /**
-     * moves toward target with its given speed
+     * gives birth to a number of offsprings and adds them to a list
+     * 
+     * @param animalList the list to add the offsprings to
+     * @param offsprings the numnber of offsprings
+     */
+    public abstract void giveBirth(List<LivingThing> animalList, int offsprings);
+
+    // @Override
+    // public boolean equals(Object obj) {
+    //     // if (this.toString().equals(obj.toString()))
+    //     // return true;
+    //     // else
+    //     // return false;
+    //     return super.equals(obj);
+    // }
+
+    /**
+     * moves toward target with its given speed, if it has a target
+     * and eats it if it has reached it
      */
     @Override
-    public void move() {
+    public void moveToEat() {
         if (getTarget() != null) {
             if (getTarget().isAlive()) {
                 int xDisp = getTarget().getCentre().x - getCentre().x;
                 int yDisp = getTarget().getCentre().y - getCentre().y;
                 int diag = (int) Math.sqrt(xDisp * xDisp + yDisp * yDisp);
                 if (diag != 0)
-                    getCentre().setLocation(getCentre().x + (2 * xDisp / diag), getCentre().y + (2 * yDisp / diag));
-
+                    getCentre().setLocation(getCentre().x + (getSpeed() * xDisp / diag),
+                            getCentre().y + (getSpeed() * yDisp / diag));
+                if (collide(getTarget()))
+                    eat(getTarget());
             }
         }
     }
 
-    
     @Override
     public boolean collide(LivingThing livingThing) {
 
@@ -137,5 +156,15 @@ public abstract class Animal extends LivingThing {
         setSize(getSize() + 1);
         getCircle().setSize(getSize());
     }
+    /**
+     * unlocks target if the target is null, dead or bigger than itself
+     * locks target otherwise
+     */
+    public void updateTargetLock() {
+        if (getTarget() != null && getTarget().isAlive() && getTarget().getSize() <= getSize())
+            lockTarget();
+        else
+            unlockTarget();
 
+    }
 }

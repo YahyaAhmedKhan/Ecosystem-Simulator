@@ -15,7 +15,7 @@ public class Plant extends LivingThing{
 
 
     @Override
-    public void move() {
+    public void moveToEat() {
 
     }
 
@@ -26,7 +26,7 @@ public class Plant extends LivingThing{
 
     @Override
     public void grow() {
-        setSize(BASE_SIZE + getAge()/100);
+        setSize(BASE_SIZE + getAge()/2000);
         getCircle().setSize(getSize());
     }
 

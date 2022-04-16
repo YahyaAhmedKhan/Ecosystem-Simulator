@@ -9,14 +9,14 @@ public class Cannibal extends Carnivore {
 
     public Cannibal(int x, int y) {
         super(x, y);
-        getCircle().setColor(Color.black);
+        getCircle().setColor(Color.blue);
     }
 
     @Override
     public void giveBirth(List<LivingThing> animalList, int offsprings) {
         Random r = new Random();
         for (int i = 0; i < offsprings; i++)
-            animalList.add(
-                    new Cannibal(getCentre().x - 15 + r.nextInt(30), getCentre().y - 15 + r.nextInt(30)));
+            animalList.add(new Cannibal(getCentre().x - 15 + r.nextInt(30), getCentre().y - 15 + r.nextInt(30)));
+        setAlive(false);
     }
 }

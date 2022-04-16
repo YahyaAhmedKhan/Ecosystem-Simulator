@@ -114,11 +114,11 @@ public abstract class Animal extends LivingThing {
 
     // @Override
     // public boolean equals(Object obj) {
-    //     // if (this.toString().equals(obj.toString()))
-    //     // return true;
-    //     // else
-    //     // return false;
-    //     return super.equals(obj);
+    // // if (this.toString().equals(obj.toString()))
+    // // return true;
+    // // else
+    // // return false;
+    // return super.equals(obj);
     // }
 
     /**
@@ -127,18 +127,21 @@ public abstract class Animal extends LivingThing {
      */
     @Override
     public void moveToEat() {
-        if (getTarget() != null) {
-            if (getTarget().isAlive()) {
-                int xDisp = getTarget().getCentre().x - getCentre().x;
-                int yDisp = getTarget().getCentre().y - getCentre().y;
-                int diag = (int) Math.sqrt(xDisp * xDisp + yDisp * yDisp);
-                if (diag != 0)
-                    getCentre().setLocation(getCentre().x + (getSpeed() * xDisp / diag),
-                            getCentre().y + (getSpeed() * yDisp / diag));
-                if (collide(getTarget()))
-                    eat(getTarget());
-            }
+        updateTargetLock();
+        if (isTargetLocked()) {
+            int xDisp = getTarget().getCentre().x - getCentre().x;
+            int yDisp = getTarget().getCentre().y - getCentre().y;
+            int diag = (int) Math.sqrt(xDisp * xDisp + yDisp * yDisp);
+            if (diag != 0)
+                getCentre().setLocation(getCentre().x + (getSpeed() * xDisp / diag),
+                        getCentre().y + (getSpeed() * yDisp / diag));
+            if (collide(getTarget()))
+                eat(getTarget());
         }
+        else {
+            System.out.println(isTargetLocked() + " " +  (isTargetLocked() ? getTarget().isAlive() : "unlocked") );
+        }
+        updateTargetLock();
     }
 
     @Override
@@ -156,6 +159,7 @@ public abstract class Animal extends LivingThing {
         setSize(getSize() + 1);
         getCircle().setSize(getSize());
     }
+
     /**
      * unlocks target if the target is null, dead or bigger than itself
      * locks target otherwise

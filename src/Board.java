@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Random;
 import java.util.Stack;
 
@@ -88,9 +89,18 @@ public class Board extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        // try {
+            
+        //     Draw(g);
+        // } catch (Exception e) {
+        //     //TODO: handle exception
+        // }
+    
         Draw(g);
+        
         // System.out.println(frame++);
     }
+    
 
     private void drawPlants(Graphics g) {
         for (LivingThing plant : plantsList) {
@@ -143,6 +153,7 @@ public class Board extends JPanel implements ActionListener {
                 }
                 carnivore.getCircle().draw(g);
             }
+            // else carnivoresList.remove(carnivore);
         }
         while (!CarnivoreBabies.isEmpty())
             carnivoresList.add((Carnivore) CarnivoreBabies.pop());
@@ -167,23 +178,39 @@ public class Board extends JPanel implements ActionListener {
                 }
                 cannibal.getCircle().draw(g);
             }
+            // else cannnibalsList.remove(cannibal);
         }
         while (!CannibalBabies.isEmpty())
             cannnibalsList.add((Cannibal) CannibalBabies.pop());
     }
 
-    private void Draw(Graphics g) {
+    private void Draw(Graphics g)  {
 
         Toolkit.getDefaultToolkit().sync();
         drawPlants(g);
         drawHerbivores(g);
         drawCarnivores(g);
         drawCannibals(g);
+        removeDead();;
 
         // for (int i = 0; i < 3; i++) {
         // plantsList.add(new Plant(r.nextInt(B_WIDTH), r.nextInt(B_HEIGHT)));
         // }
 
+    }
+    public void removeDead(){
+        for (int i = 0; i < plantsList.size(); i++){
+            if (!plantsList.get(i).isAlive()) plantsList.remove(i);
+        }
+        for (int i = 0; i < herbivoresList.size(); i++){
+            if (!herbivoresList.get(i).isAlive()) herbivoresList.remove(i);
+        }
+        for (int i = 0; i < carnivoresList.size(); i++){
+            if (!carnivoresList.get(i).isAlive()) carnivoresList.remove(i);
+        }
+        for (int i = 0; i < cannnibalsList.size(); i++){
+            if (!cannnibalsList.get(i).isAlive()) cannnibalsList.remove(i);
+        }
     }
 
     @Override

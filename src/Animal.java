@@ -45,12 +45,14 @@ public abstract class Animal extends LivingThing {
     }
 
     public void eat(LivingThing livingThing) {
-        livingThing.setAlive(false);
-        grow();
-        setDeathCounter(400);
-        unlockTarget();
-        if (!(livingThing instanceof Plant))
-            System.out.println(this + " ate " + livingThing);
+        if (livingThing.getSize() <= getSize()) {
+            livingThing.setAlive(false);
+            grow();
+            setDeathCounter(400);
+            unlockTarget();
+            if (!(livingThing instanceof Plant))
+                System.out.println(this + " ate " + livingThing);
+        }
     }
 
     /**
@@ -59,14 +61,14 @@ public abstract class Animal extends LivingThing {
      * 
      * @param livingThingList list of prey
      * @return the better target if found in the list, if not found, returns the
-     *         precious target
+     *         previous target, returns null if not suitable prey found
      */
     public LivingThing findTarget(List<LivingThing> livingThingList) {
         updateTargetLock();
+        LivingThing target = getTarget();
 
         if (!isTargetLocked()) {
             int minDist = Integer.MAX_VALUE;
-            LivingThing target = null;
             for (LivingThing livingThing : livingThingList) {
 
                 int x = getCentre().x;
@@ -93,14 +95,10 @@ public abstract class Animal extends LivingThing {
                     }
                 }
             }
-            // if (target == null)
-            // System.out.println("no prey " + isTargetLocked());
-            updateTargetLock();
-            return target;
-        } else {
-            updateTargetLock();
-            return getTarget();
+
         }
+        updateTargetLock();
+        return target;
 
     }
 
@@ -138,9 +136,7 @@ public abstract class Animal extends LivingThing {
             if (collide(getTarget()))
                 eat(getTarget());
         }
-        else {
-            System.out.println(isTargetLocked() + " " +  (isTargetLocked() ? getTarget().isAlive() : "unlocked") );
-        }
+
         updateTargetLock();
     }
 

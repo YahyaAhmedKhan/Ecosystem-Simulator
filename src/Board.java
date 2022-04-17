@@ -21,7 +21,7 @@ public class Board extends JPanel implements ActionListener {
     private final int B_HEIGHT = 600;
     private final int INITIAL_X = -40;
     private final int INITIAL_Y = -40;
-    private final int DELAY = 25;
+    private final int DELAY = 50;
 
     private static int frame = 0;
 
@@ -88,14 +88,6 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        // try {
-            
-        //     Draw(g);
-        // } catch (Exception e) {
-        //     //TODO: handle exception
-        // }
-    
         Draw(g);
         
         // System.out.println(frame++);
@@ -143,8 +135,6 @@ public class Board extends JPanel implements ActionListener {
                 carnivore.setTarget(carnivore.findTarget(herbivoresList));
                 carnivore.setTarget(carnivore.findTarget(cannnibalsList));
 
-                // carnivore.lockTarget();
-
                 carnivore.moveToEat();
 
                 if (carnivore.getSize() > 10) {
@@ -153,7 +143,6 @@ public class Board extends JPanel implements ActionListener {
                 }
                 carnivore.getCircle().draw(g);
             }
-            // else carnivoresList.remove(carnivore);
         }
         while (!CarnivoreBabies.isEmpty())
             carnivoresList.add((Carnivore) CarnivoreBabies.pop());
@@ -168,8 +157,6 @@ public class Board extends JPanel implements ActionListener {
                 cannibal.setTarget(cannibal.findTarget(carnivoresList));
                 cannibal.setTarget(cannibal.findTarget(cannnibalsList));
 
-                // cannibal.lockTarget();
-
                 cannibal.moveToEat();
 
                 if (cannibal.getSize() > 10) {
@@ -178,7 +165,6 @@ public class Board extends JPanel implements ActionListener {
                 }
                 cannibal.getCircle().draw(g);
             }
-            // else cannnibalsList.remove(cannibal);
         }
         while (!CannibalBabies.isEmpty())
             cannnibalsList.add((Cannibal) CannibalBabies.pop());

@@ -10,8 +10,8 @@ public class Game extends JFrame {
     
     private void initUI() {
         Board board = new Board();
-        board.addEngine(new EcosystemEngine(board));
-        board.getEcoEngine().setG(board.getGraphics());
+        EcosystemEngine engine = new EcosystemEngine();
+        board.addEngine(engine);
         add(board);
 
         

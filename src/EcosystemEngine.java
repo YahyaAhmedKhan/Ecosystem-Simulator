@@ -9,15 +9,15 @@ import java.security.cert.PKIXCertPathBuilderResult;
 
 public class EcosystemEngine {
     private Board board;
-    private Graphics g;
+    // private Graphics g;
 
-    public Graphics getG() {
-        return this.g;
-    }
+    // public Graphics getG() {
+    //     return this.g;
+    // }
 
-    public void setG(Graphics g) {
-        this.g = g;
-    }
+    // public void setG(Graphics g) {
+    //     this.g = g;
+    // }
 
     public Board getBoard() {
         return this.board;
@@ -97,8 +97,7 @@ public class EcosystemEngine {
 
 
 
-    public EcosystemEngine(Board board){
-        setBoard(board);
+    public EcosystemEngine(){
         // setG(board.getGraphics());
 
         plantsList = new ArrayList<LivingThing>();
@@ -118,9 +117,11 @@ public class EcosystemEngine {
 
     public void spawnLivingThings(){
         Random r = new Random();
-        int width = board.getWidth();
+        int width = 800;
+        // int width = board.getWidth();
         System.out.println(width);
-        int height = board.getHeight();
+        // System.out.println(width);
+        int height = 600;
         System.out.println(height);
 
         for (int i = 0; i < plantsCount; i++) {
@@ -137,14 +138,14 @@ public class EcosystemEngine {
         }
     }
 
-    public void updateAll(){
-        updatePlants();
-        updateHerbivores();
-        updateCarnivores();
-        updateCannibals();
+    public void updateAll(Graphics g){
+        updatePlants(g);
+        updateHerbivores(g);
+        updateCarnivores(g);
+        updateCannibals(g);
     }
 
-    private void updatePlants() {
+    private void updatePlants(Graphics g) {
         for (LivingThing plant : plantsList) {
             if (plant.isAlive()) {
                 plant.live();
@@ -154,7 +155,7 @@ public class EcosystemEngine {
         }
     }
 
-    private void updateHerbivores() {
+    private void updateHerbivores(Graphics g) {
         for (LivingThing livingThing : herbivoresList) {
             Herbivore herbivore = (Herbivore) livingThing;
             if (herbivore.isAlive()) {
@@ -182,7 +183,7 @@ public class EcosystemEngine {
             herbivoresList.add((Herbivore) HerbivoreBabies.pop());
     }
 
-    private void updateCarnivores(){
+    private void updateCarnivores(Graphics g){
         for (LivingThing livingThing : carnivoresList) {
             Carnivore carnivore = (Carnivore) livingThing;
             if (carnivore.isAlive()) {
@@ -212,7 +213,7 @@ public class EcosystemEngine {
             carnivoresList.add((Carnivore) CarnivoreBabies.pop());
     }
 
-    private void updateCannibals(){
+    private void updateCannibals(Graphics g){
         for (LivingThing livingThing : cannnibalsList) {
             Cannibal cannibal = (Cannibal) livingThing;
             if (cannibal.isAlive()) {

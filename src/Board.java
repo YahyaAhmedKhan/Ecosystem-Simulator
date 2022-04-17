@@ -71,7 +71,7 @@ public class Board extends JPanel implements ActionListener {
     private void Draw(Graphics g) {
 
         Toolkit.getDefaultToolkit().sync();
-        EcoEngine.updateAll();
+        EcoEngine.updateAll(g);
 
 
 

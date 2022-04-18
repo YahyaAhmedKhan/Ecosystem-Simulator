@@ -29,6 +29,7 @@ public class Plant extends LivingThing{
         setSize(BASE_SIZE + getAge()/2000);
         getCircle().setSize(getSize());
     }
+    //just teting
 
 
     @Override

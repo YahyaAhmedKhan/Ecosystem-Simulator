@@ -17,20 +17,20 @@ import javax.swing.Timer;
 
 public class Board extends JPanel implements ActionListener {
 
-    private final int B_WIDTH = 800;
-    private final int B_HEIGHT = 600;
+    private final int B_WIDTH = 400;
+    private final int B_HEIGHT = 400;
     private final int INITIAL_X = -40;
     private final int INITIAL_Y = -40;
-    private final int DELAY = 50;
+    private final int DELAY = 75;
 
     private static int frame = 0;
 
     Random r;
 
     private final int PLANTS = 500;
-    private final int HERBIVORES = 15;
-    private final int CARNIVORES = 12;
-    private final int CANNIBALS = 10;
+    private final int HERBIVORES = 10;
+    private final int CARNIVORES = 10;
+    private final int CANNIBALS = 19;
 
     private ArrayList<LivingThing> plantsList;
     private ArrayList<LivingThing> herbivoresList;
@@ -109,15 +109,15 @@ public class Board extends JPanel implements ActionListener {
             Herbivore herbivore = (Herbivore) livingThing;
             if (herbivore.isAlive()) {
                 herbivore.live();
-                herbivore.setTarget(herbivore.findTarget(plantsList));
-
+                herbivore.updateIfBetter(herbivore.findTarget(plantsList));
+                
                 // herbivore.lockTarget();
+                herbivore.updateTargetLock();
 
                 herbivore.moveToEat(); // move to the target, if it exists and eat if close enough
 
                 if (herbivore.getSize() > 10) { // die if you're too big
                     herbivore.giveBirth(HerbivoreBabies, 8);
-                    herbivore.setAlive(false);
                 }
                 herbivore.getCircle().draw(g);
             }
@@ -132,15 +132,17 @@ public class Board extends JPanel implements ActionListener {
             Carnivore carnivore = (Carnivore) livingThing;
             if (carnivore.isAlive()) {
                 carnivore.live();
-                carnivore.setTarget(carnivore.findTarget(herbivoresList));
-                carnivore.setTarget(carnivore.findTarget(cannnibalsList));
+                carnivore.updateIfBetter(carnivore.findTarget(herbivoresList));
+                carnivore.updateIfBetter(carnivore.findTarget(cannnibalsList));
+                carnivore.updateTargetLock();
 
                 carnivore.moveToEat();
 
                 if (carnivore.getSize() > 10) {
                     carnivore.giveBirth(CarnivoreBabies, 4);
-                    carnivore.setAlive(false);
                 }
+                System.out.println(13);
+
                 carnivore.getCircle().draw(g);
             }
         }
@@ -152,17 +154,20 @@ public class Board extends JPanel implements ActionListener {
         for (LivingThing livingThing : cannnibalsList) {
             Cannibal cannibal = (Cannibal) livingThing;
             if (cannibal.isAlive()) {
+                // System.out.println(12);
                 cannibal.live();
-                cannibal.setTarget(cannibal.findTarget(herbivoresList));
-                cannibal.setTarget(cannibal.findTarget(carnivoresList));
-                cannibal.setTarget(cannibal.findTarget(cannnibalsList));
+                cannibal.updateIfBetter(cannibal.findTarget(herbivoresList));
+                cannibal.updateIfBetter(cannibal.findTarget(carnivoresList));
+                cannibal.updateIfBetter(cannibal.findTarget(cannnibalsList));
+                cannibal.updateTargetLock();
 
                 cannibal.moveToEat();
 
                 if (cannibal.getSize() > 10) {
-                    cannibal.giveBirth(CarnivoreBabies, 2);
-                    cannibal.setAlive(false);
+                    cannibal.giveBirth(CannibalBabies, 2);
                 }
+                System.out.println(12);
+
                 cannibal.getCircle().draw(g);
             }
         }

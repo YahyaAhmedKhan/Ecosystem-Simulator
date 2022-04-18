@@ -1,4 +1,7 @@
 import java.util.List;
+
+import javax.lang.model.util.ElementScanner6;
+
 import java.awt.Point;
 
 public abstract class Animal extends LivingThing {
@@ -55,6 +58,32 @@ public abstract class Animal extends LivingThing {
         }
     }
 
+    public boolean isValidTarget(LivingThing livingThing) {
+        if (livingThing.isAlive() && livingThing.getSize() <= getSize())
+            return true;
+        else
+            return false;
+    }
+
+    public void updateIfBetter(LivingThing livingThing) {
+        updateTargetLock();
+        if (!isTargetLocked()) {
+            if (getTarget() == null)
+                setTarget(livingThing);
+            else if (isValidTarget(getTarget())) {
+                if (Point.distance(getCentre().x, getCentre().y, getTarget().getCentre().x,
+                        getTarget().getCentre().y) <= Point.distance(getCentre().x, getCentre().y,
+                                livingThing.getCentre().x,
+                                livingThing.getCentre().y))
+                    return;
+                else {
+                    setTarget(livingThing);
+                    return;
+                }
+            }
+        }
+    }
+
     /**
      * gets the best target in the given list, if the target is closer than current
      * one
@@ -65,40 +94,68 @@ public abstract class Animal extends LivingThing {
      */
     public LivingThing findTarget(List<LivingThing> livingThingList) {
         updateTargetLock();
-        LivingThing target = getTarget();
+        LivingThing bestTarget = getTarget();
 
-        if (!isTargetLocked()) {
-            int minDist = Integer.MAX_VALUE;
-            for (LivingThing livingThing : livingThingList) {
+        // if (getTarget() == null || !getTarget().isAlive() || getTarget().getSize() >
+        // getSize()) {
+        // unlockTarget();
+        // }
+        // if (!isTargetLocked()) {
+        // System.out.println(3);
 
-                int x = getCentre().x;
-                int y = getCentre().y;
-                int xTarget = livingThing.getCentre().x;
-                int yTarget = livingThing.getCentre().y;
-                int dist = (int) Point.distance(x, y, xTarget, yTarget);
+        int minDistance = Integer.MAX_VALUE;
+        if (bestTarget != null)
+            minDistance = (int) Point.distance(getCentre().x, getCentre().y, bestTarget.getCentre().x,
+                    bestTarget.getCentre().y);
+        for (LivingThing livingThing : livingThingList) {
 
-                if (!this.equals(livingThing) && livingThing.isAlive()
-                        && (getSize() >= livingThing.getSize()) && dist < minDist) { // performance
-                    // found object is:
-                    // not self, alive, smaller, and closer
-                    if (getTarget() != null && getTarget().isAlive()) { // if u already have a valid tareget
-                        if (Point.distance(x, y, xTarget, yTarget) < Point.distance(x, y, getTarget().getCentre().x,
-                                getTarget().getCentre().y)) {
-                            minDist = dist;
-                            target = livingThing;
-                        } else {
-                            target = getTarget();
-                        }
-                    } else {
-                        minDist = dist;
-                        target = livingThing;
-                    }
-                }
+            // System.out.println(7);
+
+            int x = getCentre().x;
+            int y = getCentre().y;
+            int xTarget = livingThing.getCentre().x;
+            int yTarget = livingThing.getCentre().y;
+            int distanceToNewTarget = (int) Point.distance(x, y, xTarget, yTarget);
+            // System.out.println("5");
+
+            // IF THE livingThing IS [ NOT ITSELF, ALIVE, NOT BIGGER, CLOSER (than minDist)
+            // ]
+            if (!this.equals(livingThing) && isValidTarget(livingThing) && distanceToNewTarget < minDistance) { // performance
+                // System.out.println("1");
+                // IF YOU ALREADY HAVE A VALID TARGET:
+                // if (getTarget() != null && getTarget().isAlive() && getSize() >=
+                // livingThing.getSize()) {
+                // System.out.println("2");
+
+                // int oldTargetDistance = (int) Point.distance(x, y, getTarget().getCentre().x,
+                // getTarget().getCentre().y);
+                // IF THE DISTANCE TO THE NEWFOUND TARGET IS SMALLER/CLOSER THAN THE CURRENT
+                // TARGET:
+                // if (distanceToNewTarget < oldTargetDistance) {
+                // minDistance = oldTargetDistance;
+                // newTarget = getTarget();
+                // // System.out.println("3");
+
+                // } else {
+                // minDistance = distanceToNewTarget;
+                // newTarget = livingThing;
+                // }
+                // } else {
+                // minDistance = distanceToNewTarget;
+                // newTarget = livingThing;
+
+                // }
+                // }
+
+                minDistance = distanceToNewTarget;
+                bestTarget = livingThing;
             }
 
+            // }
         }
-        updateTargetLock();
-        return target;
+        if (bestTarget == null)
+            System.out.println("none found");
+        return bestTarget;
 
     }
 
@@ -161,10 +218,15 @@ public abstract class Animal extends LivingThing {
      * locks target otherwise
      */
     public void updateTargetLock() {
-        if (getTarget() != null && getTarget().isAlive() && getTarget().getSize() <= getSize())
-            lockTarget();
-        else
+        if (getTarget() == null || !getTarget().isAlive() || getTarget().getSize() > getSize()) {
+            setTarget(null);
             unlockTarget();
+            // System.out.println(2);
 
+        } else {
+            lockTarget();
+            // System.out.println(3);
+
+        }
     }
 }

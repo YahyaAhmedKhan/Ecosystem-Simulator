@@ -38,9 +38,9 @@ public abstract class Animal extends LivingThing {
         setDeathCounter(getDeathCounter() - 1);
         if (getDeathCounter() == 0) {
             setAlive(false);
-            System.out.println(this +  " starved");
+            System.out.println(this + " starved");
         }
-        
+
     }
 
     public void eat(LivingThing livingThing) {
@@ -50,10 +50,14 @@ public abstract class Animal extends LivingThing {
         unlockTarget();
         System.out.println(this + " ate " + livingThing);
     }
+
     /**
-     * gets the best target in the given list, if the target is closer than current one
+     * gets the best target in the given list, if the target is closer than current
+     * one
+     * 
      * @param livingThingList list of prey
-     * @return  the better target if found in the list, if not found, returns the precious target
+     * @return the better target if found in the list, if not found, returns the
+     *         precious target
      */
     public LivingThing findTarget(List<LivingThing> livingThingList) {
         if (!isTargetLocked()) {
@@ -76,8 +80,7 @@ public abstract class Animal extends LivingThing {
                                 getTarget().getCentre().y)) {
                             minDist = dist;
                             target = livingThing;
-                        }
-                        else {
+                        } else {
                             target = getTarget();
                         }
                     } else {
@@ -92,10 +95,8 @@ public abstract class Animal extends LivingThing {
 
     }
 
-
     public abstract void giveBirth(List<LivingThing> animalList, int offsprings);
 
-    
     @Override
     public boolean equals(Object obj) {
         if (this.toString().equals(obj.toString()))
@@ -113,15 +114,35 @@ public abstract class Animal extends LivingThing {
             if (getTarget().isAlive()) {
                 int xDisp = getTarget().getCentre().x - getCentre().x;
                 int yDisp = getTarget().getCentre().y - getCentre().y;
-                int diag = (int) Math.sqrt(xDisp * xDisp + yDisp * yDisp);
-                if (diag != 0)
-                    getCentre().setLocation(getCentre().x + (2 * xDisp / diag), getCentre().y + (2 * yDisp / diag));
+                int diag = xDisp + yDisp;
 
+                diag = (int) Point.distance(getCentre().x, getCentre().y, getTarget().getCentre().x,
+                        getTarget().getCentre().y);
+                if (diag != 0) {
+                }
+
+                int xStep = (int) (getSpeed() * xDisp / (double) diag);
+                int yStep = (int) (getSpeed() * yDisp / (double) diag);
+
+                // xStep = (int) (getSpeed() * (double) xStep / (xStep + yStep));
+                // yStep = (int) (getSpeed() * (double) yStep / (xStep + yStep));
+
+                // if ((xStep + yStep) > getSpeed())
+                //     System.out.println(xStep + yStep + " " + this);
+                if (((getSpeed() * (double) xStep / (xStep + yStep)) + (getSpeed() * (double) yStep / (xStep + yStep))) > getSpeed())
+                    System.out.println(xStep + yStep + " " + this);
+                // yStep = getSpeed() * (yStep / (xStep + yStep));
+                getCentre().setLocation(getCentre().x + xStep,
+                        getCentre().y + yStep);
             }
+            // if (Math.abs(Math.abs(getSpeed() * xDisp / diag) + Math.abs((getSpeed() *
+            // yDisp / diag))) > getSpeed())
+            // System.out.println(Math.abs(getSpeed() * xDisp / diag) + Math.abs((getSpeed()
+            // * yDisp / diag)));
+
         }
     }
 
-    
     @Override
     public boolean collide(LivingThing livingThing) {
 

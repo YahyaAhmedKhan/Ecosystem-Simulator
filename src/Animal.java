@@ -121,19 +121,32 @@ public abstract class Animal extends LivingThing {
                 if (diag != 0) {
                 }
 
-                int xStep = (int) (getSpeed() * xDisp / (double) diag);
-                int yStep = (int) (getSpeed() * yDisp / (double) diag);
+                int xVec = (int) (getSpeed() * xDisp / (double) diag);
+                int yVec = (int) (getSpeed() * yDisp / (double) diag);
+                int x = 0;
+                int y = 0;
+                int sum = Math.abs(xVec) + Math.abs(yVec);
+                if (sum != 0) {
+                    double x1 = getSpeed() * ((double) xVec / sum);
+                    double y1 = getSpeed() * ((double) yVec / sum);
+
+                    x = (int) x1;
+                    y = (int) y1;
+                    if (getSpeed() < (x + y))
+                        System.out.println(x + " " + y + " " + this);
+
+                }
 
                 // xStep = (int) (getSpeed() * (double) xStep / (xStep + yStep));
                 // yStep = (int) (getSpeed() * (double) yStep / (xStep + yStep));
 
                 // if ((xStep + yStep) > getSpeed())
-                //     System.out.println(xStep + yStep + " " + this);
-                if (((getSpeed() * (double) xStep / (xStep + yStep)) + (getSpeed() * (double) yStep / (xStep + yStep))) > getSpeed())
-                    System.out.println(xStep + yStep + " " + this);
+                // System.out.println(xStep + yStep + " " + this);
+                // if (((getSpeed() * (double) xStep / (xStep + yStep)) + (getSpeed() * (double)
+                // yStep / (xStep + yStep))) > getSpeed())
+                // System.out.println(xStep + yStep + " " + this);
                 // yStep = getSpeed() * (yStep / (xStep + yStep));
-                getCentre().setLocation(getCentre().x + xStep,
-                        getCentre().y + yStep);
+                getCentre().setLocation(getCentre().x + x, getCentre().y + y);
             }
             // if (Math.abs(Math.abs(getSpeed() * xDisp / diag) + Math.abs((getSpeed() *
             // yDisp / diag))) > getSpeed())

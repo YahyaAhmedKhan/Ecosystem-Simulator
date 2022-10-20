@@ -1,5 +1,4 @@
-## Getting Started
-
+## Ecosystem Simulator
 A simulated ecosystem I amde for my OOP (Object Oriented Programming) course project.
 
 Coded the entire project in java, using Java Swing library for graphics visualization.
